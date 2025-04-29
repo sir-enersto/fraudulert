@@ -1,0 +1,236 @@
+/* src/assets/styles/Home.css */
+.home-container {
+  overflow-x: hidden;
+}
+
+/* Hero Section */
+.hero {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  padding: 0 5%;
+  background: linear-gradient(135deg, #292F36 0%, #1A1E23 100%);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hero-content {
+  flex: 1;
+  z-index: 2;
+}
+
+.hero-title {
+  display: block;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
+  background: linear-gradient(90deg, #F7F9FC, #83C5BE);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  display: block;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 600;
+  color: #83C5BE;
+  margin-top: 0.5rem;
+}
+
+.hero-text {
+  font-size: 1.1rem;
+  color: #F7F9FC;
+  max-width: 600px;
+  opacity: 0.9;
+  margin: 1.5rem 0 2rem;
+  line-height: 1.6;
+}
+
+.hero-image {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-image img {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 72, 255, 0.25);
+  transform: perspective(1000px) rotateY(-15deg);
+  transition: transform 0.5s ease;
+}
+
+.hero-image:hover img {
+  transform: perspective(1000px) rotateY(-5deg);
+}
+
+/* CTA Buttons */
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.cta-primary, .cta-secondary {
+  padding: 0.8rem 1.8rem;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.cta-primary {
+  background-color: #9B59B6;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 72, 255, 0.3);
+}
+
+.cta-primary:hover {
+  background-color: #8E44AD;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 72, 255, 0.4);
+}
+
+.cta-secondary {
+  border: 2px solid #2ECC71;
+  color: #2ECC71;
+}
+
+.cta-secondary:hover {
+  background-color: rgba(0, 72, 255, 0.05);
+  transform: translateY(-3px);
+}
+
+/* Features Section */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 5rem 5%;
+  background: white;
+}
+
+.feature-card {
+  background: rgba(41, 47, 54, 0.8);
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #006D77;
+  color: #F7F9FC;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(46, 204, 113, 0.1);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Animated Tech Elements */
+.tech-element {
+  position: absolute;
+  font-size: 4rem;
+  opacity: 0.1;
+  z-index: 1;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.cog-1 {
+  top: 63%;
+  left: 17%;
+  animation: spin 20s infinite reverse;
+}
+
+.cog-2 {
+  bottom: 60%;
+  font-size: 10rem;
+  right: 96%;
+  animation: spin 20s infinite;
+}
+
+.circuit {
+  top: 50%;
+  left: 80%;
+  animation: pulse 4s infinite ease-in-out;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.1; }
+  50% { transform: scale(1.2); opacity: 0.15; }
+  100% { transform: scale(1); opacity: 0.1; }
+}
+
+/* Social Footer */
+.social-footer {
+  background-color: black;
+  color: white;
+  padding: 3rem 5%;
+  text-align: center;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.social-icon {
+  font-size: 1.8rem;
+  color: white;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.social-icon:hover {
+  transform: translateY(-5px);
+  color: #e0e0e0;
+}
+
+.copyright {
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.hero-floating-image {
+  max-width: 500px;
+  width: 100%;
+  height: auto;
+  animation: float 6s ease-in-out infinite;
+  filter: drop-shadow(0 15px 30px rgba(0, 72, 255, 0.2));
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

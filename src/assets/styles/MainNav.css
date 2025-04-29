@@ -1,0 +1,261 @@
+.main-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(41, 47, 54, 0.96);
+  backdrop-filter: blur(60px);
+  -webkit-backdrop-filter: blur(60px);
+  z-index: 1000;
+  box-sizing: border-box;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 109, 119, 0.1);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  z-index: 1002; /* Ensure logo stays above mobile menu */
+}
+
+.nav-logo {
+  height: 24px;
+  transition: transform 0.3s ease;
+}
+
+.nav-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Desktop Navigation */
+.nav-links {
+  display: flex;
+  gap: 1.25rem;
+  margin-left: 2.5rem;
+}
+
+/* Mobile Menu Toggle (hidden by default) */
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #F7F9FC;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1002;
+}
+
+/* Navigation Links */
+.nav-link {
+  color: #F7F9FC;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.nav-link:hover {
+  color: #83C5BE;
+  background: rgba(131, 197, 190, 0.1);
+}
+
+.nav-link.active {
+  color: #FF9B54;
+  background: rgba(255, 155, 84, 0.1);
+}
+
+/* User Menu */
+.user-menu {
+  position: relative;
+}
+
+.user-toggle {
+  background: rgba(131, 197, 190, 0.1);
+  color: #F7F9FC;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.user-toggle:hover {
+  background: rgba(131, 197, 190, 0.2);
+}
+
+.dropdown-arrow {
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  min-width: 200px;
+  font-weight: 500;
+  background: rgba(41, 47, 54, 0.98);
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  z-index: 1001;
+  border: 1px solid rgba(0, 109, 119, 0.2);
+}
+
+.dropdown-item {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: #F7F9FC;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.dropdown-item:hover {
+  background: rgba(0, 109, 119, 0.2);
+  color: #83C5BE;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: rgba(247, 249, 252, 0.1);
+  margin: 0.25rem 0;
+}
+
+.dropdown-item.logout {
+  color: #FF9B54;
+}
+
+.dropdown-item.logout:hover {
+  background: rgba(255, 155, 84, 0.1);
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .main-nav {
+    padding: 0.75rem 5%;
+    flex-wrap: wrap;
+  }
+
+  .mobile-menu-toggle {
+    display: block;
+    order: 1;
+  }
+
+  .nav-brand {
+    order: 0;
+    margin-right: auto;
+  }
+
+  .user-menu {
+    order: 2;
+  }
+
+  .nav-links {
+    display: none;
+    order: 3;
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0 0 0;
+    padding: 0.5rem 0;
+  }
+
+  .nav-links.mobile-open {
+    display: flex;
+  }
+
+  .nav-link {
+    width: 100%;
+    text-align: center;
+    padding: 0.75rem;
+  }
+
+  .dropdown-menu {
+    position: static;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Logout Modal - Mobile Optimization */
+.logout-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.logout-modal {
+  background: rgba(41, 47, 54, 0.98);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 109, 119, 0.3);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.logout-modal h3 {
+  color: #F7F9FC;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.logout-modal p {
+  color: #83C5BE;
+  margin-bottom: 1.5rem;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.modal-btn {
+  padding: 0.625rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  flex: 1;
+  min-width: 120px;
+}
+
+/* Update the logout button in dropdown */
+.dropdown-item.logout {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  color: #FF9B54;
+  padding: 0.75rem 1rem;
+}
