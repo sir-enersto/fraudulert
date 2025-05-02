@@ -1,5 +1,5 @@
-/* Navbar Base Styles */
-.navbar {
+/* Auth Navbar - Unique class names prevent conflicts */
+.auth-navbar {
   position: fixed;
   top: 0;
   left: 0;
@@ -8,71 +8,72 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #292F36;
+  background-color: rgba(41, 47, 54, 0.96);
   backdrop-filter: blur(60px);
   -webkit-backdrop-filter: blur(60px);
-  z-index: 1000;
+  z-index: 1001; /* Higher than main nav */
   box-sizing: border-box;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid rgba(46, 204, 113, 0.05);
+  border-bottom: 1px solid rgba(0, 109, 119, 0.1);
 }
 
-/* Logo */
-.navbar-logo-link {
+/* Logo Styles */
+.auth-navbar-logo-link {
   display: flex;
   align-items: center;
-  min-width: 100px; /* Prevents logo from shrinking too much */
+  min-width: 100px;
+  z-index: 2; /* Above scrolling content */
 }
 
-.navbar-logo {
+.auth-navbar-logo {
   height: 22px;
   width: auto;
   transition: all 0.3s ease;
 }
 
-.navbar-logo:hover {
+.auth-navbar-logo:hover {
   transform: scale(1.03);
   opacity: 0.9;
 }
 
 /* Navigation Links */
-.nav-links {
+.auth-nav-links {
   display: flex;
-  gap: 10px; /* Reduced gap for smaller screens */
+  gap: 10px;
   align-items: center;
-  flex-wrap: wrap; /* Allows items to wrap if needed */
-  justify-content: flex-end;
-  min-width: max-content; /* Prevents links from disappearing */
-  flex-shrink: 0; /* Prevents shrinking */
+  min-width: max-content;
+  flex-shrink: 0;
 }
 
-.nav-link {
+.auth-nav-link {
   text-decoration: none;
   color: #F7F9FC;
-  font-size: 0.85rem; /* Smaller font for mobile */
+  font-size: 0.85rem;
   font-weight: 700;
-  padding: 8px 12px; /* Reduced padding */
+  padding: 8px 12px;
   border-radius: 6px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-.nav-link:hover {
+.auth-nav-link:hover {
   color: #83C5BE;
   background: rgba(155, 89, 182, 0.05);
 }
 
-.signup-btn {
+/* Signup Button - With All Effects */
+.auth-signup-btn {
   background-color: #006D77;
   color: white !important;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(46, 204, 113, 0.3);
-  padding: 8px 14px; /* Adjusted padding */
+  box-shadow: 0 2px 10px rgba(0, 109, 119, 0.3);
+  padding: 8px 14px;
+  border: none;
 }
 
-.signup-btn::before {
+.auth-signup-btn::before {
   content: '';
   position: absolute;
   top: 0;
@@ -88,56 +89,49 @@
   transition: 0.6s;
 }
 
-.signup-btn:hover {
-  background-color: #005D66; 
+.auth-signup-btn:hover {
+  background-color: #005D66;
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px #005D66;
+  box-shadow: 0 4px 15px rgba(0, 93, 102, 0.4);
 }
 
-.signup-btn:hover::before {
+.auth-signup-btn:hover::before {
   left: 100%;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .navbar {
-    padding: 12px 3%; /* Reduced padding */
+  .auth-navbar {
+    padding: 12px 3%;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
-  .nav-links {
+  .auth-nav-links {
     gap: 6px;
-    size: 80%;
   }
 
-  .nav-link {
+  .auth-nav-link {
     font-size: 0.8rem;
     padding: 6px 8px;
   }
 
-  .navbar-logo {
-    height: 18px; /* Slightly smaller logo */
+  .auth-navbar-logo {
+    height: 18px;
+    position: sticky;
+    left: 3%;
+    background-color: rgba(41, 47, 54, 0.96);
+    padding-right: 10px;
   }
 }
 
 @media (max-width: 480px) {
-  .navbar {
-    flex-direction: column; /* Stack items vertically */
-    padding: 10px 3%;
-    gap: 10px;
-  }
-
-  .nav-links {
-    width: 100%;
-    justify-content: center; /* Center links when stacked */
-    gap: 4px;
-  }
-
-  .nav-link {
+  .auth-nav-link {
     font-size: 0.75rem;
     padding: 4px 6px;
   }
 
-  .signup-btn {
+  .auth-signup-btn {
     padding: 4px 8px;
   }
 }

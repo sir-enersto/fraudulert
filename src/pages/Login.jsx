@@ -21,17 +21,17 @@ const Login = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      setSuccess("✅ Login successful! Redirecting...");
+      setSuccess("Login successful! Redirecting...");
       setTimeout(() => navigate("/dashboard"), 1500);
     } catch (err) {
       if (err.code === "auth/user-not-found") {
-        setError("⚠️ No account found with this email.");
+        setError("No account found with this email.");
       } else if (err.code === "auth/wrong-password") {
-        setError("⚠️ Incorrect password.");
+        setError("Incorrect password.");
       } else if (err.code === "auth/invalid-email") {
-        setError("⚠️ Invalid email address.");
+        setError("Invalid email address.");
       } else {
-        setError("⚠️ Login failed. Please try again.");
+        setError("Login failed. Please try again.");
       }
     }
   };
