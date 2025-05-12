@@ -16,7 +16,7 @@ const PageTitleHandler = () => {
 
   useEffect(() => {
     const pageTitles = {
-      '/': 'Home',
+      '/': 'Landing Page',
       '/login': 'Login',
       '/signup': 'Sign Up',
       '/dashboard':'Dashboard',

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, db } from '../firebase';
-import { updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getAuth, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
+import axios from 'axios';
 import '../assets/styles/AccountSettings.css';
 
 const AccountSettings = () => {
   const navigate = useNavigate();
+  const auth = getAuth();
   const user = auth.currentUser;
   const [userData, setUserData] = useState(null);
   const [currentPassword, setCurrentPassword] = useState('');
@@ -16,29 +16,35 @@ const AccountSettings = () => {
   const [success, setSuccess] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
-    name: '',
-    organization: ''
+    username: '',
+    organisation: ''
   });
 
-  // Fetch user data from Firestore
+  // Create axios instance (optional but recommended)
+const api = axios.create({
+  baseURL: 'http://localhost:5000/api'
+});
+
+  // Fetch user data from PostgreSQL backend
   useEffect(() => {
     const fetchUserData = async () => {
       if (user) {
         try {
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          if (userDoc.exists()) {
-            setUserData(userDoc.data());
-            setEditData({
-              name: userDoc.data().name,
-              organization: userDoc.data().organization
-            });
-          }
+          const token = await user.getIdToken();
+          const response = await axios.get('/users/me', {  // Removed duplicate /api
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setUserData(response.data);
+          setEditData({
+            username: response.data.username,
+            organisation: response.data.organisation
+          });
         } catch (err) {
+          console.error('API Error:', err.response?.data || err.message);
           setError('Failed to fetch user data');
         }
       }
     };
-
     fetchUserData();
   }, [user]);
 
@@ -73,15 +79,17 @@ const AccountSettings = () => {
     setSuccess('');
 
     try {
-      await updateDoc(doc(db, 'users', user.uid), {
-        name: editData.name,
-        organization: editData.organization
+      const token = await user.getIdToken();
+      await axios.patch('/users/me', editData, {  // Removed duplicate /api
+        headers: { Authorization: `Bearer ${token}` }
       });
+      
       setUserData(prev => ({ ...prev, ...editData }));
       setSuccess('Profile updated successfully!');
       setIsEditing(false);
     } catch (err) {
-      setError('Failed to update profile');
+      console.error('Update Error:', err.response?.data || err.message);
+      setError(err.response?.data?.error || 'Failed to update profile');
     }
   };
 
@@ -133,8 +141,8 @@ const AccountSettings = () => {
                   <label>Name</label>
                   <input
                     type="text"
-                    value={editData.name}
-                    onChange={(e) => setEditData({...editData, name: e.target.value})}
+                    value={editData.username}
+                    onChange={(e) => setEditData({...editData, username: e.target.value})}
                     required
                   />
                 </div>
@@ -150,8 +158,8 @@ const AccountSettings = () => {
                   <label>Organization</label>
                   <input
                     type="text"
-                    value={editData.organization}
-                    onChange={(e) => setEditData({...editData, organization: e.target.value})}
+                    value={editData.organisation}
+                    onChange={(e) => setEditData({...editData, organisation: e.target.value})}
                     required
                   />
                 </div>
@@ -166,9 +174,9 @@ const AccountSettings = () => {
               </form>
             ) : (
               <div className="user-info">
-                <p><strong>Name:</strong> {userData.name}</p>
+                <p><strong>Name:</strong> {userData.username}</p>
                 <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Organization:</strong> {userData.organization}</p>
+                <p><strong>Organization:</strong> {userData.organisation}</p>
                 <p><strong>Role:</strong> <span className="role-badge">{userData.role}</span></p>
               </div>
             )
@@ -188,6 +196,7 @@ const AccountSettings = () => {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 required
+                autoComplete="current-password"
               />
             </div>
             <div className="form-group">
@@ -198,6 +207,7 @@ const AccountSettings = () => {
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 minLength="6"
+                autoComplete="new-password"
               />
             </div>
             <div className="form-group">
@@ -207,6 +217,7 @@ const AccountSettings = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
+                autoComplete="new-password"
               />
             </div>
             {error && <div className="error-message">{error}</div>}
