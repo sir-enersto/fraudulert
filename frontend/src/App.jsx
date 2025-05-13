@@ -16,15 +16,15 @@ const PageTitleHandler = () => {
 
   useEffect(() => {
     const pageTitles = {
-      '/': 'Landing Page',
-      '/login': 'Login',
-      '/signup': 'Sign Up',
-      '/dashboard':'Dashboard',
-      '/accounts': 'Accounts',
-      '/transactions': 'Transactions',
-      '/alerts':'Alerts',
-      '/accountsettings':'Account Settings',
-      '/adminprofile':'Admin Profile'
+      '/': 'Home | Fraudulert',
+      '/login': 'Login | Fraudulert',
+      '/signup': 'Sign Up | Fraudulert',
+      '/dashboard':'Dashboard | Fraudulert',
+      '/accounts': 'Accounts | Fraudulert',
+      '/transactions': 'Transactions | Fraudulert',
+      '/alerts':'Alerts | Fraudulert',
+      '/accountsettings':'Account Settings | Fraudulert',
+      '/adminprofile':'Admin Profile | Fraudulert'
     };
 
     document.title = pageTitles[location.pathname] || 'Fraudulert';

@@ -231,23 +231,3 @@
   color: #007700;
   border: 1px solid #99ff99;
 }
-.remember-me {
-  display: flex;
-  align-items: center;
-  margin: 15px 0;
-  color: #83C5BE;
-  font-size: 14px;
-}
-
-.remember-me input {
-  margin-right: 8px;
-  width: 16px;
-  height: 16px;
-  accent-color: #006D77;
-  cursor: pointer;
-}
-
-.remember-me label {
-  cursor: pointer;
-  user-select: none;
-}

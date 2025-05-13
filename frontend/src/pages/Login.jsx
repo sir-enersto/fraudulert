@@ -7,6 +7,7 @@ import axios from "axios";
 import "../assets/styles/Auth.css";
 import logo from "../assets/logo.png";
 import Navbar from "../components/Navbar";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -37,6 +38,10 @@ const Login = () => {
 
       // 4. Store your JWT
       localStorage.setItem("token", response.data.token);
+
+      // 🔍 Decode and log the contents of the JWT
+      const decodedToken = jwtDecode(response.data.token);
+      console.log("Decoded JWT:", decodedToken);
       
       // 5. Show success message (kept your original alert)
       setSuccess("Login successful! Redirecting...");
