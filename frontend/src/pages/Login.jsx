@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { FaEnvelope, FaLock } from "react-icons/fa";
@@ -7,7 +7,6 @@ import axios from "axios";
 import "../assets/styles/Auth.css";
 import logo from "../assets/logo.png";
 import Navbar from "../components/Navbar";
-import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,73 +16,84 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Clear any existing auth state when component mounts
+    localStorage.removeItem("token");
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
     setIsLoading(true);
-
+  
     try {
-      // 1. Firebase Authentication
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
-      // 2. Get Firebase ID token
       const firebaseToken = await userCredential.user.getIdToken();
-      
-      // 3. Exchange for your JWT
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "http://localhost:5000/api/auth/login", 
         { firebaseToken }
       );
-
-      // 4. Store your JWT
+  
       localStorage.setItem("token", response.data.token);
-
-      // 🔍 Decode and log the contents of the JWT
-      const decodedToken = jwtDecode(response.data.token);
-      console.log("Decoded JWT:", decodedToken);
-      
-      // 5. Show success message (kept your original alert)
+      // Store first login flag for dashboard
+      localStorage.setItem("showWelcome", response.data.isFirstLogin ? "true" : "false");
+  
       setSuccess("Login successful! Redirecting...");
       setTimeout(() => navigate("/dashboard"), 1500);
       
     } catch (err) {
-      if (err.code === "auth/user-not-found") {
-        setError("No account found with this email.");
-      } else if (err.code === "auth/wrong-password") {
-        setError("Incorrect password.");
-      } else if (err.code === "auth/invalid-email") {
-        setError("Invalid email address.");
-      } else if (err.response?.data?.error) {
-        setError(err.response.data.error);
-      } else {
-        setError("Login failed. Please try again.");
-      }
+      handleLoginError(err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleLoginError = (err) => {
+    switch(err.code) {
+      case "auth/user-not-found":
+        setError("No account found with this email.");
+        break;
+      case "auth/wrong-password":
+        setError("Incorrect password.");
+        break;
+      case "auth/invalid-email":
+        setError("Invalid email address.");
+        break;
+      case "auth/too-many-requests":
+        setError("Too many attempts. Please try again later.");
+        break;
+      default:
+        setError(err.response?.data?.error || "Login failed. Please try again.");
     }
   };
 
   return (
     <div className="auth-container">
       <Navbar />
+      
+      {/* Floating Alert */}
       {(error || success) && (
         <div
           className="floating-alert"
           style={{
             backgroundColor: error ? "#ffe0e0" : "#e0ffe0",
             color: error ? "#b10000" : "#007700",
+            border: error ? "1px solid #ffb3b3" : "1px solid #99ff99"
           }}
         >
           {error || success}
         </div>
       )}
-
+      
+      {/* Login Form */}
       <div className="auth-card">
         <Link to="/" className="auth-logo-link">
           <img src={logo} alt="Fraudulert Logo" className="auth-logo" />
         </Link>
+        
         <h2>Welcome Back</h2>
+        
         <form className="auth-form" onSubmit={handleLogin}>
           <div className="input-group">
             <div className="input-icon">
@@ -96,6 +106,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="username"
             />
           </div>
 
@@ -110,6 +121,7 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="current-password"
             />
           </div>
 

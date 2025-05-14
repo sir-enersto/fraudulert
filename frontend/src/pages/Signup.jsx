@@ -66,7 +66,7 @@ const Signup = () => {
       });
 
       setSuccess("Account created successfully! Redirecting...");
-      setTimeout(() => navigate("/dashboard"), 2000);
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       console.error("Signup error:", err);
       setError(err.response?.data?.error || err.message || "Failed to create account");
