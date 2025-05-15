@@ -3,7 +3,9 @@ const cors = require('cors');
 const app = express();
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/users');
-const accountRoutes = require('./routes/accounts'); // Add this line
+const accountRoutes = require('./routes/accounts');
+const predictionRoutes = require('./routes/predictions');
+const dashboardRoutes = require('./routes/dashboard');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
@@ -29,7 +31,9 @@ app.use(express.json({ limit: '10kb' }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/accounts', accountRoutes); // Add this line
+app.use('/api/accounts', accountRoutes);
+app.use('/api/predictions', predictionRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

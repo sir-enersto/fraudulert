@@ -8,7 +8,7 @@ import '../assets/styles/MainNav.css';
 const MainNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // Add mobile menu state
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = async () => {

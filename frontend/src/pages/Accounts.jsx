@@ -129,6 +129,14 @@ const Accounts = () => {
       {error && <div className="error-message">{error}</div>}
 
       <div className="accounts-table-container">
+        {accounts.length === 0 ? (
+          <div className="no-accounts-placeholder">
+            <div className="placeholder-content">
+              <h3>No Accounts Found</h3>
+              <p>There are currently no accounts to display.</p>
+            </div>
+          </div>
+        ) : (
         <table className="accounts-table">
           <thead>
             <tr>
@@ -174,6 +182,7 @@ const Accounts = () => {
               ))}
           </tbody>
         </table>
+        )}
       </div>
     </div>
   );

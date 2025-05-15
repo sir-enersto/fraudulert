@@ -114,12 +114,15 @@ router.get('/', auth, async (req, res) => {
       } else {
         // Viewer sees accounts created by their admin
         query = `
-          SELECT a.id, a.current_age, a.birth_year, a.birth_month, 
-                 a.gender, a.address, a.credit_score, a.risk_score
-          FROM accounts a
-          JOIN app_users u ON a.created_by = u.firebase_uid
-          WHERE u.created_by = $1 OR a.created_by = $1
-        `;
+        SELECT a.id, a.current_age, a.birth_year, a.birth_month, 
+               a.gender, a.address, a.credit_score
+        FROM accounts a
+        WHERE a.created_by = (
+          SELECT created_by FROM app_users 
+          WHERE firebase_uid = $1
+        )
+        OR a.created_by = $1
+      `;
         params = [req.user.firebase_uid];
       }
   

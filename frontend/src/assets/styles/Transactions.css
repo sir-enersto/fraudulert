@@ -1,128 +1,195 @@
 .transactions-container {
-    padding: 2rem;
-    background-color: #f7f9fc;
-    color: #292F36;
-    min-height: 100vh;
-  }
-  
-  .transactions-header {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
-  
-  .transactions-header h2 {
-    color: #006D77;
-    font-size: 1.8rem;
-    margin: 0;
-  }
-  
+  padding: 2rem;
+  background-color: #f7f9fc;
+  color: #292F36;
+  min-height: 100vh;
+}
+
+.transactions-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.transactions-header h2 {
+  color: #006D77;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-bar {
+  position: relative;
+  flex-grow: 1;
+  max-width: 400px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: #292F36;
+  font-size: 1rem;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #83C5BE;
+}
+
+.csv-upload-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(131, 197, 190, 0.1);
+  color: #006D77;
+}
+
+.csv-upload-btn:hover {
+  background-color: rgba(131, 197, 190, 0.2);
+}
+
+.filter-dropdown {
+  background-color: white;
+  color: #292F36;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.transactions-table-container {
+  overflow-x: auto;
+}
+
+.results-section {
+  margin-bottom: 2rem;
+}
+
+.results-section h3 {
+  color: #006D77;
+  margin-bottom: 1rem;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.transactions-table th,
+.transactions-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.transactions-table th {
+  background-color: rgba(0, 109, 119, 0.05);
+  color: #006D77;
+}
+
+.transactions-table tr:hover {
+  background-color: rgba(131, 197, 190, 0.05);
+}
+
+/* Upload section */
+.file-upload-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-confirm-btn {
+  padding: 8px 12px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.upload-confirm-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Risk highlighting */
+.high-risk {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.low-risk {
+  color: #388e3c;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #d32f2f;
+  background-color: #fde8e8;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+}
+
+.no-transactions-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.placeholder-content {
+  text-align: center;
+  padding: 20px;
+}
+
+.no-transactions-placeholder h3 {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.no-transactions-placeholder p {
+  color: #777;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
   .controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
+
   .search-bar {
-    position: relative;
-    flex-grow: 1;
-    max-width: 400px;
+    max-width: 100%;
   }
-  
-  .search-bar input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background-color: white;
-    color: #292F36;
-    font-size: 1rem;
-  }
-  
-  .search-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #83C5BE;
-  }
-  
-  .date-filter,
-  .type-filter {
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background-color: white;
-    color: #292F36;
-    font-weight: 500;
-  }
-  
-  .transactions-table-container {
-    overflow-x: auto;
-  }
-  
-  .transactions-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  
+
   .transactions-table th,
   .transactions-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #eee;
+    padding: 0.75rem 0.5rem;
   }
-  
-  .transactions-table th {
-    background-color: rgba(0, 109, 119, 0.05);
-    color: #006D77;
-  }
-  
-  .transactions-table tr:hover {
-    background-color: rgba(131, 197, 190, 0.05);
-  }
-  
-  .risk-tag {
-    font-weight: 600;
-    padding: 0.35rem 0.75rem;
-    border-radius: 20px;
-    text-align: center;
-    display: inline-block;
-  }
-  
-  .risk-tag.low {
-    background-color: rgba(0, 119, 0, 0.1);
-    color: #007700;
-  }
-  
-  .risk-tag.medium {
-    background-color: rgba(255, 155, 84, 0.2);
-    color: #FF9B54;
-  }
-  
-  .risk-tag.high {
-    background-color: rgba(177, 0, 0, 0.1);
-    color: #b10000;
-  }
-  
-  @media (max-width: 768px) {
-    .controls {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    .search-bar {
-      max-width: 100%;
-    }
-  
-    .transactions-table th,
-    .transactions-table td {
-      padding: 0.75rem 0.5rem;
-    }
-  }
-  
+}
