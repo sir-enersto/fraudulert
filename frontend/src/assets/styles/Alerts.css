@@ -1,4 +1,4 @@
-/* Main Container - Light grey background */
+/* Main Container */
 .alerts-page {
     padding: 2rem;
     background-color: #f5f7fa;
@@ -20,7 +20,7 @@
     margin: 0;
   }
   
-  /* Controls - Fixed alignment */
+  /* Controls */
   .controls {
     display: flex;
     justify-content: space-between;
@@ -28,7 +28,7 @@
     width: 100%;
   }
   
-  /* Search Bar - Left aligned */
+  /* Search Bar */
   .search-bar {
     position: relative;
     width: 400px;
@@ -53,7 +53,7 @@
     color: #83C5BE;
   }
   
-  /* Filter Dropdown - Right aligned */
+  /* Filter Dropdown */
   .filter-container {
     display: flex;
     justify-content: flex-end;
@@ -71,7 +71,7 @@
     min-width: 180px;
   }
   
-  /* Table (unchanged) */
+  /* Table */
   .alerts-table-container {
     background-color: white;
     border-radius: 8px;
@@ -92,7 +92,7 @@
   
   .alerts-table th {
     background-color: #f8f9fa;
-    color: #006D77; /* Your emerald color */
+    color: #006D77;
     font-weight: 600;
   }
   
@@ -110,13 +110,13 @@
   }
   
   .status-badge.pending {
-    background-color: rgba(255, 155, 84, 0.1); /* Coral tint */
-    color: #FF9B54; /* Your coral color */
+    background-color: rgba(255, 155, 84, 0.1); 
+    color: #FF9B54;
   }
   
   .status-badge.reviewed {
-    background-color: rgba(131, 197, 190, 0.1); /* Teal tint */
-    color: #83C5BE; /* Your teal color */
+    background-color: rgba(131, 197, 190, 0.1);
+    color: #83C5BE;
   }
   
   /* Delete Button */

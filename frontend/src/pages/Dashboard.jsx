@@ -2,28 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import MainNavbar from '../components/MainNavbar';
 import WelcomePopup from '../components/WelcomePopup';
-import { 
-  FaUserShield, 
-  FaChartLine, 
-  FaExclamationTriangle, 
-  FaBalanceScale, 
-  FaSyncAlt, 
-  FaDatabase,
-  FaTable
-} from 'react-icons/fa';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer, 
-  PieChart, 
-  Pie, 
-  Cell 
-} from 'recharts';
+import { FaUserShield, FaChartLine, FaExclamationTriangle, FaBalanceScale, FaSyncAlt, FaDatabase, FaTable } from 'react-icons/fa';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import '../assets/styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -41,10 +21,15 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshCooldown, setRefreshCooldown] = useState(0);
+  const [refreshCount, setRefreshCount] = useState(0);
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
   const API_BASE_URL = 'http://localhost:5000/api/dashboard';
+  const MIN_REFRESH_INTERVAL = 30; // seconds
 
+  // Initialize dashboard and check for welcome popup
   useEffect(() => {
     const shouldShowWelcome = localStorage.getItem('showWelcome') === 'true';
     if (shouldShowWelcome) {
@@ -53,52 +38,124 @@ const Dashboard = () => {
       localStorage.setItem('hasSeenWelcome', 'true');
     }
 
-    fetchDashboardData();
+    fetchInitialData();
   }, []);
 
-  const fetchDashboardData = async () => {
+  // Handle refresh cooldown timer
+  useEffect(() => {
+    let timer;
+    if (refreshCooldown > 0) {
+      timer = setTimeout(() => {
+        setRefreshCooldown(prev => prev - 1);
+      }, 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [refreshCooldown]);
+
+  // Fetch initial data (full load)
+  const fetchInitialData = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const [
-        metricsRes,
-        riskDistributionRes,
-        highRiskTransactionsRes,
-        probabilityTrendRes,
-        highRiskClientsRes,
-        modelPerformanceRes,
-        ageRiskDataRes,
-        geographicRiskRes
-      ] = await Promise.all([
-        axios.get(`${API_BASE_URL}/metrics`),
-        axios.get(`${API_BASE_URL}/risk-distribution`),
-        axios.get(`${API_BASE_URL}/high-risk-transactions?limit=10`),
-        axios.get(`${API_BASE_URL}/probability-trend?days=30`),
-        axios.get(`${API_BASE_URL}/high-risk-clients?limit=10`),
-        axios.get(`${API_BASE_URL}/model-performance`),
-        axios.get(`${API_BASE_URL}/age-risk-correlation`),
-        axios.get(`${API_BASE_URL}/geographic-risk?minTransactions=5&limit=10`)
+      const essentialData = await Promise.all([
+        fetchWithRetry(`${API_BASE_URL}/metrics`),
+        fetchWithRetry(`${API_BASE_URL}/risk-distribution`)
       ]);
 
-      setDashboardData({
-        metrics: metricsRes.data,
-        riskDistribution: riskDistributionRes.data,
-        highRiskTransactions: highRiskTransactionsRes.data,
-        probabilityTrend: probabilityTrendRes.data,
-        highRiskClients: highRiskClientsRes.data,
-        modelPerformance: modelPerformanceRes.data,
-        ageRiskData: ageRiskDataRes.data,
-        geographicRisk: geographicRiskRes.data
-      });
+      setDashboardData(prev => ({
+        ...prev,
+        metrics: essentialData[0],
+        riskDistribution: essentialData[1]
+      }));
+
+      // Load secondary data after initial render
+      setTimeout(() => {
+        fetchSecondaryData();
+      }, 1000);
 
       setLastUpdated(new Date());
     } catch (err) {
-      console.error('Dashboard API error:', err);
-      setError(err.response?.data?.error || 'Failed to load dashboard data');
+      handleDataError(err);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Fetch secondary data (less critical)
+  const fetchSecondaryData = async () => {
+    try {
+      const secondaryData = await Promise.all([
+        fetchWithRetry(`${API_BASE_URL}/high-risk-transactions?limit=10`),
+        fetchWithRetry(`${API_BASE_URL}/probability-trend?days=30`),
+        fetchWithRetry(`${API_BASE_URL}/high-risk-clients?limit=10`)
+      ]);
+
+      setDashboardData(prev => ({
+        ...prev,
+        highRiskTransactions: secondaryData[0],
+        probabilityTrend: secondaryData[1],
+        highRiskClients: secondaryData[2]
+      }));
+    } catch (err) {
+      console.error('Secondary data load error:', err);
+    }
+  };
+
+  // Handle manual refresh
+  const handleRefresh = async () => {
+    if (refreshCooldown > 0) {
+      setError(`Please wait ${refreshCooldown} seconds before refreshing again`);
+      return;
+    }
+
+    setIsRefreshing(true);
+    setError(null);
+
+    try {
+      // Only refresh the most critical data
+      const refreshedData = await Promise.all([
+        fetchWithRetry(`${API_BASE_URL}/metrics`),
+        fetchWithRetry(`${API_BASE_URL}/high-risk-transactions?limit=10`)
+      ]);
+
+      setDashboardData(prev => ({
+        ...prev,
+        metrics: refreshedData[0],
+        highRiskTransactions: refreshedData[1]
+      }));
+
+      setLastUpdated(new Date());
+      setRefreshCooldown(MIN_REFRESH_INTERVAL);
+      setRefreshCount(prev => prev + 1);
+    } catch (err) {
+      handleDataError(err);
+      // Longer cooldown if rate limited
+      if (err.response?.status === 429) {
+        setRefreshCooldown(60);
+      }
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  // API wrapper with retry logic
+  const fetchWithRetry = async (url, retries = 3) => {
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (err) {
+      if (retries > 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return fetchWithRetry(url, retries - 1);
+      }
+      throw err;
+    }
+  };
+
+  const handleDataError = (err) => {
+    console.error('Dashboard API error:', err);
+    setError(err.response?.data?.error || 'Failed to load dashboard data');
   };
 
   const handleWelcomeClose = () => {
@@ -131,8 +188,12 @@ const Dashboard = () => {
         <div className="error-message">
           <h3>Error Loading Dashboard</h3>
           <p>{error}</p>
-          <button onClick={fetchDashboardData} className="retry-button">
-            <FaSyncAlt /> Try Again
+          <button 
+            onClick={fetchInitialData} 
+            className="retry-button"
+            disabled={refreshCooldown > 0}
+          >
+            <FaSyncAlt /> {refreshCooldown > 0 ? `Try Again in ${refreshCooldown}s` : 'Try Again'}
           </button>
         </div>
       </div>
@@ -148,18 +209,29 @@ const Dashboard = () => {
         <div className="dashboard-header">
           <h1>Fraud Detection Dashboard</h1>
           <div className="header-controls">
-            <button onClick={fetchDashboardData} className="refresh-button">
-              <FaSyncAlt /> Refresh
+            <button 
+              onClick={handleRefresh} 
+              className={`refresh-button ${refreshCooldown > 0 ? 'cooldown' : ''}`}
+              disabled={isRefreshing || refreshCooldown > 0}
+            >
+              {isRefreshing ? (
+                <span className="spinner"></span>
+              ) : refreshCooldown > 0 ? (
+                `Wait ${refreshCooldown}s`
+              ) : (
+                <><FaSyncAlt /> Refresh</>
+              )}
             </button>
             {lastUpdated && (
               <div className="last-updated">
                 Last updated: {lastUpdated.toLocaleTimeString()}
+                {refreshCount > 0 && ` (Refreshed ${refreshCount}x)`}
               </div>
             )}
           </div>
         </div>
 
-        {/* Key Metrics */}
+        {/* Key Metrics Section */}
         <div className="metrics-grid">
           <div className="metric-card">
             <div className="metric-icon"><FaUserShield /></div>
@@ -195,7 +267,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Charts Row 1 */}
+        {/* Charts Section */}
         <div className="dashboard-row">
           <div className="dashboard-card">
             <h2>Risk Distribution</h2>
@@ -254,85 +326,17 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Charts Row 2 */}
-        <div className="dashboard-row">
-          <div className="dashboard-card">
-            <h2>Fraud Probability Trend (30 days)</h2>
-            <div className="chart-container">
-              {dashboardData.probabilityTrend.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={dashboardData.probabilityTrend}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="day" />
-                    <YAxis domain={[0, 1]} />
-                    <Tooltip 
-                      formatter={(value) => [(value * 100).toFixed(2) + '%', 'Avg Probability']}
-                      labelFormatter={(value) => `Date: ${value}`}
-                    />
-                    <Legend />
-                    <Bar 
-                      dataKey="avg_probability" 
-                      fill="#83C5BE" 
-                      name="Avg Probability"
-                      radius={[4, 4, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <EmptyState 
-                  icon={<FaDatabase size={48} />} 
-                  message="No trend data available" 
-                />
-              )}
-            </div>
-          </div>
-
-          <div className="dashboard-card">
-            <h2>Age vs. Fraud Risk</h2>
-            <div className="chart-container">
-              {dashboardData.ageRiskData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={dashboardData.ageRiskData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="current_age" />
-                    <YAxis domain={[0, 1]} />
-                    <Tooltip 
-                      formatter={(value) => [(value * 100).toFixed(2) + '%', 'Avg Risk']}
-                      labelFormatter={(value) => `Age: ${value}`}
-                    />
-                    <Legend />
-                    <Bar 
-                      dataKey="avg_risk" 
-                      fill="#FFDDD2" 
-                      name="Avg Risk Score"
-                      radius={[4, 4, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <EmptyState 
-                  icon={<FaDatabase size={48} />} 
-                  message="No age correlation data available" 
-                />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Data Tables */}
+        {/* Data Tables Section */}
         <div className="dashboard-row">
           <div className="dashboard-card full-width">
             <div className="table-header">
               <h2>Recent High-Risk Transactions</h2>
               <button 
-                onClick={() => axios.get(`${API_BASE_URL}/high-risk-transactions?limit=10`)
-                  .then(res => setDashboardData(prev => ({
-                    ...prev,
-                    highRiskTransactions: res.data
-                  })))}
+                onClick={() => handleRefresh()} 
                 className="refresh-sm"
+                disabled={isRefreshing || refreshCooldown > 0}
               >
-                <FaSyncAlt /> Refresh
+                <FaSyncAlt /> {isRefreshing ? 'Refreshing...' : 'Refresh'}
               </button>
             </div>
             <div className="table-container">
@@ -371,57 +375,6 @@ const Dashboard = () => {
                 <EmptyState 
                   icon={<FaTable size={48} />} 
                   message="No high-risk transactions found" 
-                />
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="dashboard-row">
-          <div className="dashboard-card full-width">
-            <div className="table-header">
-              <h2>Highest Risk Clients</h2>
-              <button 
-                onClick={() => axios.get(`${API_BASE_URL}/high-risk-clients?limit=10`)
-                  .then(res => setDashboardData(prev => ({
-                    ...prev,
-                    highRiskClients: res.data
-                  })))}
-                className="refresh-sm"
-              >
-                <FaSyncAlt /> Refresh
-              </button>
-            </div>
-            <div className="table-container">
-              {dashboardData.highRiskClients.length > 0 ? (
-                <table className="dashboard-table">
-                  <thead>
-                    <tr>
-                      <th>Client ID</th>
-                      <th>Age</th>
-                      <th>Gender</th>
-                      <th>Highest Risk Score</th>
-                      <th>Transaction Count</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dashboardData.highRiskClients.map((client, index) => (
-                      <tr key={index}>
-                        <td>{client.id}</td>
-                        <td>{client.current_age}</td>
-                        <td>{client.gender}</td>
-                        <td className={client.highest_risk_score > 0.7 ? 'high-risk' : ''}>
-                          {(client.highest_risk_score * 100).toFixed(2)}%
-                        </td>
-                        <td>{client.transaction_count}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <EmptyState 
-                  icon={<FaTable size={48} />} 
-                  message="No high-risk clients found" 
                 />
               )}
             </div>

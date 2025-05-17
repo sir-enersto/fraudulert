@@ -20,18 +20,18 @@ const AccountSettings = () => {
     organisation: ''
   });
 
-  // Create axios instance (optional but recommended)
+  // axios instance
 const api = axios.create({
   baseURL: 'http://localhost:5000/api'
 });
 
-  // Fetch user data from PostgreSQL backend
+  // Fetch user data from postgre 
   useEffect(() => {
     const fetchUserData = async () => {
       if (user) {
         try {
           const token = await user.getIdToken();
-          const response = await axios.get('/users/me', {  // Removed duplicate /api
+          const response = await axios.get('/users/me', { 
             headers: { Authorization: `Bearer ${token}` }
           });
           setUserData(response.data);
@@ -80,7 +80,7 @@ const api = axios.create({
 
     try {
       const token = await user.getIdToken();
-      await axios.patch('/users/me', editData, {  // Removed duplicate /api
+      await axios.patch('/users/me', editData, { 
         headers: { Authorization: `Bearer ${token}` }
       });
       

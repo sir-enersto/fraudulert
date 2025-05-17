@@ -19,7 +19,7 @@
 .nav-brand {
   display: flex;
   align-items: center;
-  z-index: 1002; /* Ensure logo stays above mobile menu */
+  z-index: 1002;
 }
 
 .nav-logo {
@@ -38,7 +38,7 @@
   margin-left: 2.5rem;
 }
 
-/* Mobile Menu Toggle (hidden by default) */
+/* Mobile Menu Toggle */
 .mobile-menu-toggle {
   display: none;
   background: none;

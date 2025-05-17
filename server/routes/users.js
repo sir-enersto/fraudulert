@@ -22,7 +22,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// Get current user's data
+// Get current users data
 router.get('/me', verifyToken, async (req, res) => {
   try {
     const user = await pool.query(
@@ -61,7 +61,7 @@ router.patch('/me', verifyToken, async (req, res) => {
   }
 });
 
-// Get all users in admin's organization
+// Get all users in admin organization
 router.get('/', verifyToken, isAdmin, async (req, res) => {
   try {
     const users = await pool.query(
@@ -100,7 +100,7 @@ router.delete('/:uid', verifyToken, isAdmin, async (req, res) => {
   const { uid } = req.params;
   
   try {
-    // 1. First delete from Firebase
+    //First delete from firebase
     try {
       await admin.auth().deleteUser(uid);
       console.log(`Successfully deleted user ${uid} from Firebase`);
@@ -112,7 +112,7 @@ router.delete('/:uid', verifyToken, isAdmin, async (req, res) => {
       });
     }
 
-    // 2. Then delete from PostgreSQL
+    //then delete from postgre
     const deleteResult = await pool.query(
       `DELETE FROM app_users
        WHERE firebase_uid = $1

@@ -60,7 +60,7 @@
   }
   
   .auth-logo {
-    height: 30px; /* Slightly larger for auth pages */
+    height: 30px;
     width: auto;
     margin: 0 auto 1.5rem;
     display: block;
@@ -134,7 +134,7 @@
 }
 
 .auth-input:focus + .input-icon {
-  color: #FF9B54; /* Coral on focus */
+  color: #FF9B54; 
   transform: scale(1.1);
 }
 
@@ -154,7 +154,7 @@
 }
 
 .auth-btn:hover {
-  background-color: #005D66; /* Darker teal */
+  background-color: #005D66;
   transform: translateY(-2px);
   box-shadow: 0 6px 8px rgba(0, 109, 119, 0.3);
 }
@@ -168,7 +168,7 @@
   color: #006D77; /* Primary teal */
 }
 
-/* Animation keyframes remain the same */
+/* Animation keyframes */
 @keyframes floatBubbles {
   0% { transform: translate(0%, 0%); }
   25% { transform: translate(-10%, -10%); }

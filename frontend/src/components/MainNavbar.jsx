@@ -26,7 +26,7 @@ const MainNavbar = () => {
   return (
     <>
       <nav className="main-nav">
-        {/* Mobile Menu Toggle Button - Add this right after nav opening tag */}
+        {/* Mobile Menu Toggle Button */}
         <button 
           className="mobile-menu-toggle"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -40,7 +40,7 @@ const MainNavbar = () => {
           </Link>
         </div>
 
-        {/* Updated nav-links with mobile-open class */}
+        {/* nav-links with mobile-open class */}
         <div className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
           <Link to="/dashboard" className="nav-link">Dashboard</Link>
           <Link to="/accounts" className="nav-link">Accounts</Link>
@@ -76,7 +76,7 @@ const MainNavbar = () => {
         </div>
       </nav>
 
-      {/* Logout Confirmation Modal */}
+      {/* Logout Confirmation Code */}
       {showLogoutModal && (
         <div className="logout-modal-overlay">
           <div className="logout-modal">

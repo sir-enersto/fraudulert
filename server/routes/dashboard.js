@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db'); // Assuming you have a db connection pool
+const pool = require('../db');
 
 // Helper function for error handling
 const handleErrors = (res, error) => {

@@ -212,7 +212,7 @@
     100% { transform: translate(0%, 0%); }
   }
   
-  /* Floating alerts (same as your auth styles) */
+  /* Floating alerts */
   .floating-alert {
     position: fixed;
     top: 15%;

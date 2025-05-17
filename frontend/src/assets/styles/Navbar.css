@@ -1,4 +1,3 @@
-/* Auth Navbar - Unique class names prevent conflicts */
 .auth-navbar {
   position: fixed;
   top: 0;
@@ -11,7 +10,7 @@
   background-color: rgba(41, 47, 54, 0.96);
   backdrop-filter: blur(60px);
   -webkit-backdrop-filter: blur(60px);
-  z-index: 1001; /* Higher than main nav */
+  z-index: 1001;
   box-sizing: border-box;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid rgba(0, 109, 119, 0.1);
@@ -62,7 +61,7 @@
   background: rgba(155, 89, 182, 0.05);
 }
 
-/* Signup Button - With All Effects */
+/* Signup Button */
 .auth-signup-btn {
   background-color: #006D77;
   color: white !important;

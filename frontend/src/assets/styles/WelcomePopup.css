@@ -1,16 +1,15 @@
-/* WelcomePopup.css */
 .welcome-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.85); /* Darker overlay */
+    background-color: rgba(0, 0, 0, 0.85); 
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(3px); /* Optional: Adds blur effect to background */
+    backdrop-filter: blur(3px);
   }
   
   .welcome-popup {
